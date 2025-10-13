@@ -2,6 +2,11 @@ const { env } = require("../config");
 const { ApiError, verifyToken, generateCsrfHmacHash } = require("../utils");
 
 const csrfProtection = (req, res, next) => {
+  // Skip CSRF protection for internal service requests
+  if (req.user && req.user.type === 'internal') {
+    return next();
+  }
+
   const csrfToken = req.headers["x-csrf-token"];
   const accessToken = req.cookies.accessToken;
 

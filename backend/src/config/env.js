@@ -18,6 +18,7 @@ const env = {
   API_URL: process.env.API_URL,
   COOKIE_DOMAIN: process.env.COOKIE_DOMAIN,
   RESEND_API_KEY: process.env.RESEND_API_KEY,
+  INTERNAL_SERVICE_API_KEY: process.env.INTERNAL_SERVICE_API_KEY,
 };
 
 module.exports = { env };

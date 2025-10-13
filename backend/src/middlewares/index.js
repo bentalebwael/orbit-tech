@@ -1,5 +1,6 @@
 const { handle404Error } = require("./handle-404-error");
 const { authenticateToken } = require("./authenticate-token");
+const { authenticateService } = require("./authenticate-service");
 const { csrfProtection } = require("./csrf-protection");
 const { handleGlobalError } = require("./handle-global-error");
 const { handleEmailVerificationToken } = require("./handle-email-verification-token");
@@ -9,6 +10,7 @@ const { isUserAdmin } = require("./is-user-admin");
 
 module.exports = {
     authenticateToken,
+    authenticateService,
     csrfProtection,
     handleGlobalError,
     handle404Error,

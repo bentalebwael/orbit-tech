@@ -1,0 +1,80 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: school_mgmt_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: school_mgmt
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./seed_db:/docker-entrypoint-initdb.d
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - school_network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: school_mgmt_backend
+    ports:
+      - "5007:5007"
+    environment:
+      - PORT=5007
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/school_mgmt
+      - JWT_ACCESS_TOKEN_SECRET=12345
+      - JWT_REFRESH_TOKEN_SECRET=12345678
+      - CSRF_TOKEN_SECRET=my_csrf_secret
+      - JWT_ACCESS_TOKEN_TIME_IN_MS=900000
+      - JWT_REFRESH_TOKEN_TIME_IN_MS=28800000
+      - CSRF_TOKEN_TIME_IN_MS=950000
+      - MAIL_FROM_USER=your-desired-name@domain-name.com
+      - EMAIL_VERIFICATION_TOKEN_SECRET=863yncir8bc2r
+      - EMAIL_VERIFICATION_TOKEN_TIME_IN_MS=18000000
+      - PASSWORD_SETUP_TOKEN_TIME_IN_MS=300000
+      - PASSWORD_SETUP_TOKEN_SECRET=gwdigwidw
+      - UI_URL=http://localhost:5173
+      - API_URL=http://localhost:5007
+      - COOKIE_DOMAIN=localhost
+      - RESEND_API_KEY=re_123456789
+      - INTERNAL_SERVICE_API_KEY=${INTERNAL_SERVICE_API_KEY:-secure_internal_api_key_12345}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - school_network
+
+  go-service:
+    build:
+      context: ./go-service
+      dockerfile: Dockerfile
+    container_name: school_mgmt_pdf_service
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - BACKEND_URL=http://backend:5007
+      - INTERNAL_API_KEY=${INTERNAL_SERVICE_API_KEY:-secure_internal_api_key_12345}
+      - ENV=production
+      - LOG_LEVEL=info
+    depends_on:
+      - backend
+    networks:
+      - school_network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  school_network:
+    driver: bridge
