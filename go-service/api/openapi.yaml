@@ -16,21 +16,16 @@ paths:
       responses:
         '200':
           description: Service health status
+          headers:
+            X-Request-ID:
+              description: Unique request identifier
+              schema:
+                type: string
+                format: uuid
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    enum: [healthy, degraded]
-                  service:
-                    type: string
-                  backend:
-                    type: object
-                    properties:
-                      reachable:
-                        type: boolean
+                $ref: '#/components/schemas/HealthResponse'
 
   /api/v1/students/{studentId}/report:
     get:
@@ -40,13 +35,24 @@ paths:
         - name: studentId
           in: path
           required: true
-          description: Student ID
+          description: Student ID (1-20 digits)
           schema:
             type: string
-            pattern: '^[0-9]+$'
+            pattern: '^[0-9]{1,20}$'
       responses:
         '200':
           description: PDF report generated successfully
+          headers:
+            Content-Disposition:
+              description: Attachment filename for the PDF
+              schema:
+                type: string
+                example: 'attachment; filename=student_123_report.pdf'
+            X-Request-ID:
+              description: Unique request identifier
+              schema:
+                type: string
+                format: uuid
           content:
             application/pdf:
               schema:
@@ -64,6 +70,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error (PDF generation failed)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '503':
           description: Backend service unavailable
           content:
@@ -75,8 +93,39 @@ components:
   schemas:
     Error:
       type: object
+      required:
+        - error
       properties:
         error:
           type: string
-        request_id:
+          description: Error message
+          example: "Student not found"
+      example:
+        error: "Student ID must be numeric (1-20 digits)"
+
+    HealthResponse:
+      type: object
+      required:
+        - status
+        - service
+        - backend
+      properties:
+        status:
           type: string
+          enum: [healthy, degraded]
+          description: Overall service health status
+        service:
+          type: string
+          description: Service name
+          example: "go-report-service"
+        backend:
+          type: object
+          properties:
+            reachable:
+              type: boolean
+              description: Whether the backend service is reachable
+      example:
+        status: "healthy"
+        service: "go-report-service"
+        backend:
+          reachable: true
