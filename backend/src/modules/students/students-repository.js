@@ -77,7 +77,7 @@ const findStudentDetail = async (id) => {
         FROM users u
         LEFT JOIN user_profiles p ON u.id = p.user_id
         LEFT JOIN users r ON u.reporter_id = r.id
-        WHERE u.id = $1`;
+        WHERE u.id = $1 AND u.role_id = 3`;
     const queryParams = [id];
     const { rows } = await processDBRequest({ query, queryParams });
     return rows[0];

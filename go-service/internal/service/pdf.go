@@ -22,6 +22,43 @@ func NewPDFService(logger *zap.Logger) *PDFService {
 	}
 }
 
+// formatDate converts ISO 8601 date string to readable format
+func (s *PDFService) formatDate(isoDate string) string {
+	if isoDate == "" {
+		return "N/A"
+	}
+	t, err := time.Parse(time.RFC3339, isoDate)
+	if err != nil {
+		s.logger.Warn("Failed to parse date", zap.String("date", isoDate), zap.Error(err))
+		return isoDate
+	}
+	return t.Format("January 2, 2006")
+}
+
+// formatValue returns the value or "N/A" if empty
+func (s *PDFService) formatValue(value string) string {
+	if value == "" {
+		return "N/A"
+	}
+	return value
+}
+
+// formatIntValue returns the int as string or "N/A" if zero
+func (s *PDFService) formatIntValue(value int) string {
+	if value == 0 {
+		return "N/A"
+	}
+	return fmt.Sprintf("%d", value)
+}
+
+// formatBool returns "Active" or "Inactive"
+func (s *PDFService) formatBool(value bool) string {
+	if value {
+		return "Active"
+	}
+	return "Inactive"
+}
+
 // GenerateStudentReport generates a PDF report for a student
 func (s *PDFService) GenerateStudentReport(student *domain.Student) ([]byte, error) {
 	pdf := gofpdf.New("P", "mm", "A4", "")
@@ -43,36 +80,44 @@ func (s *PDFService) GenerateStudentReport(student *domain.Student) ([]byte, err
 	// Personal Information Section
 	s.addSectionHeader(pdf, "Personal Information")
 	s.addTableRow(pdf, "Student ID", fmt.Sprintf("%d", student.ID))
-	s.addTableRow(pdf, "Full Name", student.Name)
-	s.addTableRow(pdf, "Email", student.Email)
-	s.addTableRow(pdf, "Date of Birth", student.DateOfBirth)
-	s.addTableRow(pdf, "Gender", student.Gender)
-	s.addTableRow(pdf, "Blood Group", student.BloodGroup)
+	s.addTableRow(pdf, "Full Name", s.formatValue(student.Name))
+	s.addTableRow(pdf, "Email", s.formatValue(student.Email))
+	s.addTableRow(pdf, "Date of Birth", s.formatDate(student.DOB))
+	s.addTableRow(pdf, "Gender", s.formatValue(student.Gender))
+	s.addTableRow(pdf, "Phone", s.formatValue(student.Phone))
+	s.addTableRow(pdf, "System Access", s.formatBool(student.SystemAccess))
 	pdf.Ln(5)
 
 	// Academic Information Section
 	s.addSectionHeader(pdf, "Academic Information")
-	s.addTableRow(pdf, "Class", student.Class)
-	s.addTableRow(pdf, "Section", student.Section)
-	s.addTableRow(pdf, "Roll Number", fmt.Sprintf("%d", student.Roll))
-	s.addTableRow(pdf, "Admission Date", student.AdmissionDate)
-	s.addTableRow(pdf, "Status", student.Status)
+	s.addTableRow(pdf, "Class", s.formatValue(student.Class))
+	s.addTableRow(pdf, "Section", s.formatValue(student.Section))
+	s.addTableRow(pdf, "Roll Number", s.formatIntValue(student.Roll))
+	s.addTableRow(pdf, "Admission Date", s.formatDate(student.AdmissionDate))
+	s.addTableRow(pdf, "Added By", s.formatValue(student.ReporterName))
+	pdf.Ln(5)
+
+	// Parent Information Section
+	s.addSectionHeader(pdf, "Parent Information")
+	s.addTableRow(pdf, "Father's Name", s.formatValue(student.FatherName))
+	s.addTableRow(pdf, "Father's Phone", s.formatValue(student.FatherPhone))
+	s.addTableRow(pdf, "Mother's Name", s.formatValue(student.MotherName))
+	s.addTableRow(pdf, "Mother's Phone", s.formatValue(student.MotherPhone))
 	pdf.Ln(5)
 
 	// Guardian Information Section
 	s.addSectionHeader(pdf, "Guardian Information")
-	s.addTableRow(pdf, "Guardian Name", student.GuardianName)
-	s.addTableRow(pdf, "Guardian Phone", student.GuardianPhone)
-	s.addTableRow(pdf, "Guardian Email", student.GuardianEmail)
+	s.addTableRow(pdf, "Guardian Name", s.formatValue(student.GuardianName))
+	s.addTableRow(pdf, "Guardian Phone", s.formatValue(student.GuardianPhone))
+	s.addTableRow(pdf, "Relationship", s.formatValue(student.RelationOfGuardian))
 	pdf.Ln(5)
 
-	// Contact Information Section
-	s.addSectionHeader(pdf, "Contact Information")
-	s.addTableRow(pdf, "Phone", student.Phone)
-	s.addTableRow(pdf, "Address", student.Address)
-	pdf.Ln(10)
+	// Address Information Section
+	s.addSectionHeader(pdf, "Address Information")
+	s.addTableRow(pdf, "Current Address", s.formatValue(student.CurrentAddress))
+	s.addTableRow(pdf, "Permanent Address", s.formatValue(student.PermanentAddress))
 
-	// Footer
+	// Footer - positioned at bottom of current page
 	pdf.SetY(-30)
 	pdf.SetFont("Arial", "I", 8)
 	pdf.SetTextColor(127, 140, 141)

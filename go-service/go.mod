@@ -1,6 +1,8 @@
 module github.com/wbentaleb/student-report-service
 
-go 1.24.5
+go 1.24.0
+
+toolchain go1.24.5
 
 require (
 	github.com/gin-gonic/gin v1.11.0

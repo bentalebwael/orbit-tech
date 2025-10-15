@@ -1,25 +1,26 @@
 package domain
 
-import "time"
-
 // Student represents a student entity from the backend
 type Student struct {
-	ID            int       `json:"id"`
-	Name          string    `json:"name"`
-	Email         string    `json:"email"`
-	Class         string    `json:"class"`
-	Section       string    `json:"section"`
-	Roll          int       `json:"roll"`
-	Phone         string    `json:"phone"`
-	Address       string    `json:"address"`
-	DateOfBirth   string    `json:"dateOfBirth"`
-	Gender        string    `json:"gender"`
-	BloodGroup    string    `json:"bloodGroup"`
-	GuardianName  string    `json:"guardianName"`
-	GuardianPhone string    `json:"guardianPhone"`
-	GuardianEmail string    `json:"guardianEmail"`
-	AdmissionDate string    `json:"admissionDate"`
-	Status        string    `json:"status"`
-	CreatedAt     time.Time `json:"createdAt"`
-	UpdatedAt     time.Time `json:"updatedAt"`
+	ID                 int    `json:"id"`
+	Name               string `json:"name"`
+	Email              string `json:"email"`
+	SystemAccess       bool   `json:"systemAccess"`
+	Phone              string `json:"phone"`
+	Gender             string `json:"gender"`
+	DOB                string `json:"dob"`
+	Class              string `json:"class"`
+	Section            string `json:"section"`
+	Roll               int    `json:"roll"`
+	FatherName         string `json:"fatherName"`
+	FatherPhone        string `json:"fatherPhone"`
+	MotherName         string `json:"motherName"`
+	MotherPhone        string `json:"motherPhone"`
+	GuardianName       string `json:"guardianName"`
+	GuardianPhone      string `json:"guardianPhone"`
+	RelationOfGuardian string `json:"relationOfGuardian"`
+	CurrentAddress     string `json:"currentAddress"`
+	PermanentAddress   string `json:"permanentAddress"`
+	AdmissionDate      string `json:"admissionDate"`
+	ReporterName       string `json:"reporterName"`
 }

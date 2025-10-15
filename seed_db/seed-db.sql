@@ -159,6 +159,19 @@ VALUES ('Draft', 'Draft'),
 ('Approve', 'Approved'),
 ('Delete', 'Deleted');
 
+-- Add Classes and Sections (required for foreign key constraints)
+INSERT INTO classes (name, sections) VALUES
+('Grade 8', 2),
+('Grade 9', 2),
+('Grade 10', 2),
+('Grade 11', 2),
+('Grade 12', 2);
+
+INSERT INTO sections (name) VALUES
+('A'),
+('B'),
+('C');
+
 INSERT INTO users(name,email,role_id,created_dt,password, is_active, is_email_verified)
 VALUES('John Doe','admin@school-admin.com',1, now(),'$argon2id$v=19$m=65536,t=3,p=4$21a+bDbESEI60WO1wRKnvQ$i6OrxqNiHvwtf1Xg3bfU5+AXZG14fegW3p+RSMvq1oU', true, true)
 RETURNING id;
@@ -167,3 +180,94 @@ INSERT INTO user_profiles
 (user_id, gender, marital_status, phone,dob,join_dt,qualification,experience,current_address,permanent_address,father_name,mother_name,emergency_phone)
 VALUES
 ((SELECT currval('users_id_seq')),'Male','Married','4759746607','2024-08-05',NULL,NULL,NULL,NULL,NULL,'stut','lancy','79374304');
+
+-- Add Students
+INSERT INTO users(name,email,role_id,created_dt,password,is_active,is_email_verified,reporter_id)
+VALUES('Alice Johnson','alice.johnson@student.com',3,now(),'$argon2id$v=19$m=65536,t=3,p=4$21a+bDbESEI60WO1wRKnvQ$i6OrxqNiHvwtf1Xg3bfU5+AXZG14fegW3p+RSMvq1oU',true,true,1)
+RETURNING id;
+
+INSERT INTO user_profiles
+(user_id,gender,phone,dob,class_name,section_name,roll,father_name,father_phone,mother_name,mother_phone,guardian_name,guardian_phone,relation_of_guardian,current_address,permanent_address,admission_dt)
+VALUES
+((SELECT currval('users_id_seq')),'Female','5551234567','2010-03-15','Grade 10','A',1,'Robert Johnson','5559876543','Mary Johnson','5559876544','Robert Johnson','5559876543','Father','123 Oak Street, Springfield','123 Oak Street, Springfield','2024-01-15');
+
+INSERT INTO users(name,email,role_id,created_dt,password,is_active,is_email_verified,reporter_id)
+VALUES('Bob Smith','bob.smith@student.com',3,now(),'$argon2id$v=19$m=65536,t=3,p=4$21a+bDbESEI60WO1wRKnvQ$i6OrxqNiHvwtf1Xg3bfU5+AXZG14fegW3p+RSMvq1oU',true,true,1)
+RETURNING id;
+
+INSERT INTO user_profiles
+(user_id,gender,phone,dob,class_name,section_name,roll,father_name,father_phone,mother_name,mother_phone,guardian_name,guardian_phone,relation_of_guardian,current_address,permanent_address,admission_dt)
+VALUES
+((SELECT currval('users_id_seq')),'Male','5551234568','2009-07-22','Grade 10','A',2,'David Smith','5559876545','Sarah Smith','5559876546','David Smith','5559876545','Father','456 Maple Avenue, Springfield','456 Maple Avenue, Springfield','2024-01-15');
+
+INSERT INTO users(name,email,role_id,created_dt,password,is_active,is_email_verified,reporter_id)
+VALUES('Carol Williams','carol.williams@student.com',3,now(),'$argon2id$v=19$m=65536,t=3,p=4$21a+bDbESEI60WO1wRKnvQ$i6OrxqNiHvwtf1Xg3bfU5+AXZG14fegW3p+RSMvq1oU',true,true,1)
+RETURNING id;
+
+INSERT INTO user_profiles
+(user_id,gender,phone,dob,class_name,section_name,roll,father_name,father_phone,mother_name,mother_phone,guardian_name,guardian_phone,relation_of_guardian,current_address,permanent_address,admission_dt)
+VALUES
+((SELECT currval('users_id_seq')),'Female','5551234569','2010-11-08','Grade 10','B',1,'James Williams','5559876547','Patricia Williams','5559876548','James Williams','5559876547','Father','789 Pine Road, Springfield','789 Pine Road, Springfield','2024-01-15');
+
+INSERT INTO users(name,email,role_id,created_dt,password,is_active,is_email_verified,reporter_id)
+VALUES('David Brown','david.brown@student.com',3,now(),'$argon2id$v=19$m=65536,t=3,p=4$21a+bDbESEI60WO1wRKnvQ$i6OrxqNiHvwtf1Xg3bfU5+AXZG14fegW3p+RSMvq1oU',true,true,1)
+RETURNING id;
+
+INSERT INTO user_profiles
+(user_id,gender,phone,dob,class_name,section_name,roll,father_name,father_phone,mother_name,mother_phone,guardian_name,guardian_phone,relation_of_guardian,current_address,permanent_address,admission_dt)
+VALUES
+((SELECT currval('users_id_seq')),'Male','5551234570','2009-05-30','Grade 10','B',2,'Michael Brown','5559876549','Linda Brown','5559876550','Michael Brown','5559876549','Father','321 Elm Street, Springfield','321 Elm Street, Springfield','2024-01-15');
+
+INSERT INTO users(name,email,role_id,created_dt,password,is_active,is_email_verified,reporter_id)
+VALUES('Emma Davis','emma.davis@student.com',3,now(),'$argon2id$v=19$m=65536,t=3,p=4$21a+bDbESEI60WO1wRKnvQ$i6OrxqNiHvwtf1Xg3bfU5+AXZG14fegW3p+RSMvq1oU',true,true,1)
+RETURNING id;
+
+INSERT INTO user_profiles
+(user_id,gender,phone,dob,class_name,section_name,roll,father_name,father_phone,mother_name,mother_phone,guardian_name,guardian_phone,relation_of_guardian,current_address,permanent_address,admission_dt)
+VALUES
+((SELECT currval('users_id_seq')),'Female','5551234571','2011-01-12','Grade 9','A',1,'William Davis','5559876551','Barbara Davis','5559876552','William Davis','5559876551','Father','654 Cedar Lane, Springfield','654 Cedar Lane, Springfield','2024-01-15');
+
+INSERT INTO users(name,email,role_id,created_dt,password,is_active,is_email_verified,reporter_id)
+VALUES('Frank Miller','frank.miller@student.com',3,now(),'$argon2id$v=19$m=65536,t=3,p=4$21a+bDbESEI60WO1wRKnvQ$i6OrxqNiHvwtf1Xg3bfU5+AXZG14fegW3p+RSMvq1oU',true,true,1)
+RETURNING id;
+
+INSERT INTO user_profiles
+(user_id,gender,phone,dob,class_name,section_name,roll,father_name,father_phone,mother_name,mother_phone,guardian_name,guardian_phone,relation_of_guardian,current_address,permanent_address,admission_dt)
+VALUES
+((SELECT currval('users_id_seq')),'Male','5551234572','2011-09-18','Grade 9','A',2,'Richard Miller','5559876553','Susan Miller','5559876554','Richard Miller','5559876553','Father','987 Birch Boulevard, Springfield','987 Birch Boulevard, Springfield','2024-01-15');
+
+INSERT INTO users(name,email,role_id,created_dt,password,is_active,is_email_verified,reporter_id)
+VALUES('Grace Wilson','grace.wilson@student.com',3,now(),'$argon2id$v=19$m=65536,t=3,p=4$21a+bDbESEI60WO1wRKnvQ$i6OrxqNiHvwtf1Xg3bfU5+AXZG14fegW3p+RSMvq1oU',true,true,1)
+RETURNING id;
+
+INSERT INTO user_profiles
+(user_id,gender,phone,dob,class_name,section_name,roll,father_name,father_phone,mother_name,mother_phone,guardian_name,guardian_phone,relation_of_guardian,current_address,permanent_address,admission_dt)
+VALUES
+((SELECT currval('users_id_seq')),'Female','5551234573','2010-06-25','Grade 9','B',1,'Thomas Wilson','5559876555','Jessica Wilson','5559876556','Thomas Wilson','5559876555','Father','147 Spruce Court, Springfield','147 Spruce Court, Springfield','2024-01-15');
+
+INSERT INTO users(name,email,role_id,created_dt,password,is_active,is_email_verified,reporter_id)
+VALUES('Henry Moore','henry.moore@student.com',3,now(),'$argon2id$v=19$m=65536,t=3,p=4$21a+bDbESEI60WO1wRKnvQ$i6OrxqNiHvwtf1Xg3bfU5+AXZG14fegW3p+RSMvq1oU',true,true,1)
+RETURNING id;
+
+INSERT INTO user_profiles
+(user_id,gender,phone,dob,class_name,section_name,roll,father_name,father_phone,mother_name,mother_phone,guardian_name,guardian_phone,relation_of_guardian,current_address,permanent_address,admission_dt)
+VALUES
+((SELECT currval('users_id_seq')),'Male','5551234574','2011-12-03','Grade 9','B',2,'Christopher Moore','5559876557','Nancy Moore','5559876558','Christopher Moore','5559876557','Father','258 Willow Way, Springfield','258 Willow Way, Springfield','2024-01-15');
+
+INSERT INTO users(name,email,role_id,created_dt,password,is_active,is_email_verified,reporter_id)
+VALUES('Ivy Taylor','ivy.taylor@student.com',3,now(),'$argon2id$v=19$m=65536,t=3,p=4$21a+bDbESEI60WO1wRKnvQ$i6OrxqNiHvwtf1Xg3bfU5+AXZG14fegW3p+RSMvq1oU',true,true,1)
+RETURNING id;
+
+INSERT INTO user_profiles
+(user_id,gender,phone,dob,class_name,section_name,roll,father_name,father_phone,mother_name,mother_phone,guardian_name,guardian_phone,relation_of_guardian,current_address,permanent_address,admission_dt)
+VALUES
+((SELECT currval('users_id_seq')),'Female','5551234575','2012-04-20','Grade 8','A',1,'Daniel Taylor','5559876559','Karen Taylor','5559876560','Daniel Taylor','5559876559','Father','369 Aspen Drive, Springfield','369 Aspen Drive, Springfield','2024-01-15');
+
+INSERT INTO users(name,email,role_id,created_dt,password,is_active,is_email_verified,reporter_id)
+VALUES('Jack Anderson','jack.anderson@student.com',3,now(),'$argon2id$v=19$m=65536,t=3,p=4$21a+bDbESEI60WO1wRKnvQ$i6OrxqNiHvwtf1Xg3bfU5+AXZG14fegW3p+RSMvq1oU',true,true,1)
+RETURNING id;
+
+INSERT INTO user_profiles
+(user_id,gender,phone,dob,class_name,section_name,roll,father_name,father_phone,mother_name,mother_phone,guardian_name,guardian_phone,relation_of_guardian,current_address,permanent_address,admission_dt)
+VALUES
+((SELECT currval('users_id_seq')),'Male','5551234576','2012-08-14','Grade 8','A',2,'Paul Anderson','5559876561','Betty Anderson','5559876562','Paul Anderson','5559876561','Father','741 Poplar Place, Springfield','741 Poplar Place, Springfield','2024-01-15');
