@@ -47,7 +47,6 @@ func NewFileCache(basePath string, ttl time.Duration) (*FileCache, error) {
 	return fc, nil
 }
 
-// cleanupDirectory removes all PDF files in the cache directory
 func cleanupDirectory(dirPath string) error {
 	entries, err := os.ReadDir(dirPath)
 	if err != nil {
@@ -68,7 +67,6 @@ func cleanupDirectory(dirPath string) error {
 	return nil
 }
 
-// GenerateStudentHash GenerateHash creates a hash from student data for cache key
 func GenerateStudentHash(student *dto.Student) string {
 	data := fmt.Sprintf("%v:%v:%v:%v:%v",
 		student.Name,
@@ -110,12 +108,10 @@ func (c *FileCache) Set(studentID string, data []byte, hash string) error {
 	filename := fmt.Sprintf("student_%s_%s.pdf", studentID, hash)
 	filePath := filepath.Join(c.basePath, filename)
 
-	// Write file to disk
 	if err := os.WriteFile(filePath, data, 0644); err != nil {
 		return fmt.Errorf("failed to write cache file: %w", err)
 	}
 
-	// Update index
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
@@ -136,7 +132,6 @@ func (c *FileCache) Set(studentID string, data []byte, hash string) error {
 	return nil
 }
 
-// Cleanup worker runs periodically to remove expired entries
 func (c *FileCache) startCleanupWorker() {
 	ticker := time.NewTicker(time.Minute)
 

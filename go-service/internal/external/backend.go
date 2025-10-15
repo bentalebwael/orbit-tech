@@ -8,9 +8,10 @@ import (
 	"net/http"
 	"time"
 
+	"go.uber.org/zap"
+
 	"github.com/wbentaleb/student-report-service/internal/dto"
 	"github.com/wbentaleb/student-report-service/internal/errors"
-	"go.uber.org/zap"
 )
 
 // BackendClient handles communication with the Node.js backend
@@ -21,7 +22,6 @@ type BackendClient struct {
 	logger     *zap.Logger
 }
 
-// NewBackendClient creates a new backend client instance
 func NewBackendClient(baseURL, apiKey string, logger *zap.Logger) *BackendClient {
 	return &BackendClient{
 		baseURL: baseURL,
@@ -33,7 +33,6 @@ func NewBackendClient(baseURL, apiKey string, logger *zap.Logger) *BackendClient
 	}
 }
 
-// GetStudent fetches a student by ID from the backend with retry logic
 func (c *BackendClient) GetStudent(ctx context.Context, id string) (*dto.Student, error) {
 	var lastErr error
 	delays := []time.Duration{1 * time.Second, 2 * time.Second, 4 * time.Second}
@@ -49,7 +48,7 @@ func (c *BackendClient) GetStudent(ctx context.Context, id string) (*dto.Student
 
 		lastErr = err
 
-		// Don't retry on non-retryable errors (404, etc.)
+		// Don't retry on non-retryable errors
 		if errors.IsNotFound(err) {
 			c.logger.Warn("Student not found",
 				zap.String("student_id", id))
@@ -73,7 +72,6 @@ func (c *BackendClient) GetStudent(ctx context.Context, id string) (*dto.Student
 	return nil, fmt.Errorf("failed after 3 attempts: %w", lastErr)
 }
 
-// getStudent performs a single request to fetch student data
 func (c *BackendClient) getStudent(ctx context.Context, id string) (*dto.Student, error) {
 	url := fmt.Sprintf("%s/api/v1/students/%s", c.baseURL, id)
 
@@ -116,7 +114,6 @@ func (c *BackendClient) getStudent(ctx context.Context, id string) (*dto.Student
 	return &student, nil
 }
 
-// CheckHealth verifies if the backend is reachable
 func (c *BackendClient) CheckHealth(ctx context.Context) bool {
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()

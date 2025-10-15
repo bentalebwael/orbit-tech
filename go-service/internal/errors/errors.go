@@ -22,14 +22,29 @@ func (e *ServiceError) Error() string {
 	return fmt.Sprintf("%s service error: %v", e.Service, e.Err)
 }
 
-// IsNotFound checks if the error is or wraps a NotFoundError
+type PDFGenerationError struct {
+	Err error
+}
+
+func (e *PDFGenerationError) Error() string {
+	return fmt.Sprintf("PDF generation failed: %v", e.Err)
+}
+
+func NewPDFGenerationError(err error) *PDFGenerationError {
+	return &PDFGenerationError{Err: err}
+}
+
 func IsNotFound(err error) bool {
 	var notFoundErr *NotFoundError
 	return errors.As(err, &notFoundErr)
 }
 
-// IsServiceError checks if the error is or wraps a ServiceError
 func IsServiceError(err error) bool {
 	var serviceErr *ServiceError
 	return errors.As(err, &serviceErr)
+}
+
+func IsPDFGenerationError(err error) bool {
+	var pdfErr *PDFGenerationError
+	return errors.As(err, &pdfErr)
 }

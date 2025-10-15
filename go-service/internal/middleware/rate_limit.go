@@ -7,10 +7,10 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+
 	"github.com/wbentaleb/student-report-service/internal/dto"
 )
 
-// getRequestID retrieves the request ID from the context
 func getRequestID(c *gin.Context) string {
 	if requestID, exists := c.Get("RequestID"); exists {
 		if id, ok := requestID.(string); ok {
@@ -20,7 +20,6 @@ func getRequestID(c *gin.Context) string {
 	return ""
 }
 
-// RateLimiter implements a simple in-memory rate limiter per IP address
 type RateLimiter struct {
 	requests map[string][]time.Time
 	mu       sync.Mutex
@@ -28,7 +27,6 @@ type RateLimiter struct {
 	window   time.Duration // Time window for rate limiting
 }
 
-// NewRateLimiter creates a rate limiter with specified requests per minute
 func NewRateLimiter(requestsPerMinute int) *RateLimiter {
 	return &RateLimiter{
 		requests: make(map[string][]time.Time),

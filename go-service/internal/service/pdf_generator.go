@@ -11,19 +11,16 @@ import (
 	"github.com/wbentaleb/student-report-service/internal/dto"
 )
 
-// PDFService handles PDF generation
 type PDFService struct {
 	logger *zap.Logger
 }
 
-// NewPDFService creates a new PDF service instance
 func NewPDFService(logger *zap.Logger) *PDFService {
 	return &PDFService{
 		logger: logger,
 	}
 }
 
-// GenerateStudentReport generates a PDF report for a student
 func (s *PDFService) GenerateStudentReport(student *dto.Student) ([]byte, error) {
 	pdf := gofpdf.New("P", "mm", "A4", "")
 	pdf.AddPage()
@@ -100,7 +97,6 @@ func (s *PDFService) GenerateStudentReport(student *dto.Student) ([]byte, error)
 	return buf.Bytes(), nil
 }
 
-// formatDate converts ISO 8601 date string to readable format
 func (s *PDFService) formatDate(isoDate string) string {
 	if isoDate == "" {
 		return "N/A"
@@ -113,7 +109,6 @@ func (s *PDFService) formatDate(isoDate string) string {
 	return t.Format("January 2, 2006")
 }
 
-// formatValue returns the value or "N/A" if empty
 func (s *PDFService) formatValue(value string) string {
 	if value == "" {
 		return "N/A"
@@ -121,7 +116,6 @@ func (s *PDFService) formatValue(value string) string {
 	return value
 }
 
-// formatIntValue returns the int as string or "N/A" if zero
 func (s *PDFService) formatIntValue(value int) string {
 	if value == 0 {
 		return "N/A"
@@ -129,7 +123,6 @@ func (s *PDFService) formatIntValue(value int) string {
 	return fmt.Sprintf("%d", value)
 }
 
-// formatBool returns "Active" or "Inactive"
 func (s *PDFService) formatBool(value bool) string {
 	if value {
 		return "Active"
@@ -137,7 +130,6 @@ func (s *PDFService) formatBool(value bool) string {
 	return "Inactive"
 }
 
-// addSectionHeader adds a styled section header
 func (s *PDFService) addSectionHeader(pdf *gofpdf.Fpdf, title string) {
 	pdf.SetFont("Arial", "B", 14)
 	pdf.SetFillColor(52, 152, 219)
@@ -146,7 +138,6 @@ func (s *PDFService) addSectionHeader(pdf *gofpdf.Fpdf, title string) {
 	pdf.SetTextColor(0, 0, 0)
 }
 
-// addTableRow adds a two-column table row
 func (s *PDFService) addTableRow(pdf *gofpdf.Fpdf, label, value string) {
 	pdf.SetFont("Arial", "B", 11)
 	pdf.SetFillColor(236, 240, 241)

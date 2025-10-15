@@ -8,7 +8,6 @@ import (
 	"github.com/kelseyhightower/envconfig"
 )
 
-// Config holds all application configuration
 type Config struct {
 	// Server
 	Port        string `envconfig:"PORT" default:"8080"`
