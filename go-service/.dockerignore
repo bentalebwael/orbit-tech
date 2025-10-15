@@ -1,0 +1,37 @@
+# Cache directory
+cache/
+
+# Environment files (should use Docker environment variables instead)
+.env
+.env.local
+.env.*
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Documentation
+*.md
+!README.md
+
+# Binaries
+bin/
+
+# Test files
+*_test.go
+**/*_test.go
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+tmp-cache/

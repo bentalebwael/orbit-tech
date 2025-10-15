@@ -1,6 +1,6 @@
-package domain
+package dto
 
-// Student represents a student entity from the backend
+// Student represents the student data from backend API
 type Student struct {
 	ID                 int    `json:"id"`
 	Name               string `json:"name"`
@@ -23,4 +23,5 @@ type Student struct {
 	PermanentAddress   string `json:"permanentAddress"`
 	AdmissionDate      string `json:"admissionDate"`
 	ReporterName       string `json:"reporterName"`
+	LastUpdated        string `json:"lastUpdated"`
 }

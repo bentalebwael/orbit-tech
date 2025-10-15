@@ -6,8 +6,9 @@ import (
 	"time"
 
 	"github.com/jung-kurt/gofpdf"
-	"github.com/wbentaleb/student-report-service/internal/domain"
 	"go.uber.org/zap"
+
+	"github.com/wbentaleb/student-report-service/internal/dto"
 )
 
 // PDFService handles PDF generation
@@ -22,45 +23,8 @@ func NewPDFService(logger *zap.Logger) *PDFService {
 	}
 }
 
-// formatDate converts ISO 8601 date string to readable format
-func (s *PDFService) formatDate(isoDate string) string {
-	if isoDate == "" {
-		return "N/A"
-	}
-	t, err := time.Parse(time.RFC3339, isoDate)
-	if err != nil {
-		s.logger.Warn("Failed to parse date", zap.String("date", isoDate), zap.Error(err))
-		return isoDate
-	}
-	return t.Format("January 2, 2006")
-}
-
-// formatValue returns the value or "N/A" if empty
-func (s *PDFService) formatValue(value string) string {
-	if value == "" {
-		return "N/A"
-	}
-	return value
-}
-
-// formatIntValue returns the int as string or "N/A" if zero
-func (s *PDFService) formatIntValue(value int) string {
-	if value == 0 {
-		return "N/A"
-	}
-	return fmt.Sprintf("%d", value)
-}
-
-// formatBool returns "Active" or "Inactive"
-func (s *PDFService) formatBool(value bool) string {
-	if value {
-		return "Active"
-	}
-	return "Inactive"
-}
-
 // GenerateStudentReport generates a PDF report for a student
-func (s *PDFService) GenerateStudentReport(student *domain.Student) ([]byte, error) {
+func (s *PDFService) GenerateStudentReport(student *dto.Student) ([]byte, error) {
 	pdf := gofpdf.New("P", "mm", "A4", "")
 	pdf.AddPage()
 
@@ -134,6 +98,43 @@ func (s *PDFService) GenerateStudentReport(student *domain.Student) ([]byte, err
 
 	s.logger.Info("PDF generated successfully", zap.Int("student_id", student.ID))
 	return buf.Bytes(), nil
+}
+
+// formatDate converts ISO 8601 date string to readable format
+func (s *PDFService) formatDate(isoDate string) string {
+	if isoDate == "" {
+		return "N/A"
+	}
+	t, err := time.Parse(time.RFC3339, isoDate)
+	if err != nil {
+		s.logger.Warn("Failed to parse date", zap.String("date", isoDate), zap.Error(err))
+		return isoDate
+	}
+	return t.Format("January 2, 2006")
+}
+
+// formatValue returns the value or "N/A" if empty
+func (s *PDFService) formatValue(value string) string {
+	if value == "" {
+		return "N/A"
+	}
+	return value
+}
+
+// formatIntValue returns the int as string or "N/A" if zero
+func (s *PDFService) formatIntValue(value int) string {
+	if value == 0 {
+		return "N/A"
+	}
+	return fmt.Sprintf("%d", value)
+}
+
+// formatBool returns "Active" or "Inactive"
+func (s *PDFService) formatBool(value bool) string {
+	if value {
+		return "Active"
+	}
+	return "Inactive"
 }
 
 // addSectionHeader adds a styled section header

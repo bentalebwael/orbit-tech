@@ -1,4 +1,4 @@
-package client
+package external
 
 import (
 	"context"
@@ -8,7 +8,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/wbentaleb/student-report-service/internal/domain"
+	"github.com/wbentaleb/student-report-service/internal/dto"
+	"github.com/wbentaleb/student-report-service/internal/errors"
 	"go.uber.org/zap"
 )
 
@@ -33,7 +34,7 @@ func NewBackendClient(baseURL, apiKey string, logger *zap.Logger) *BackendClient
 }
 
 // GetStudent fetches a student by ID from the backend with retry logic
-func (c *BackendClient) GetStudent(ctx context.Context, id string) (*domain.Student, error) {
+func (c *BackendClient) GetStudent(ctx context.Context, id string) (*dto.Student, error) {
 	var lastErr error
 	delays := []time.Duration{1 * time.Second, 2 * time.Second, 4 * time.Second}
 
@@ -47,6 +48,15 @@ func (c *BackendClient) GetStudent(ctx context.Context, id string) (*domain.Stud
 		}
 
 		lastErr = err
+
+		// Don't retry on non-retryable errors (404, etc.)
+		if errors.IsNotFound(err) {
+			c.logger.Warn("Student not found",
+				zap.String("student_id", id))
+			return nil, err
+		}
+
+		// Retry on transient errors
 		if attempt < 2 {
 			c.logger.Warn("Request failed, retrying",
 				zap.String("student_id", id),
@@ -64,7 +74,7 @@ func (c *BackendClient) GetStudent(ctx context.Context, id string) (*domain.Stud
 }
 
 // getStudent performs a single request to fetch student data
-func (c *BackendClient) getStudent(ctx context.Context, id string) (*domain.Student, error) {
+func (c *BackendClient) getStudent(ctx context.Context, id string) (*dto.Student, error) {
 	url := fmt.Sprintf("%s/api/v1/students/%s", c.baseURL, id)
 
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
@@ -87,11 +97,18 @@ func (c *BackendClient) getStudent(ctx context.Context, id string) (*domain.Stud
 		return nil, fmt.Errorf("failed to read response body: %w", err)
 	}
 
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("backend returned status %d: %s", resp.StatusCode, string(body))
+	if resp.StatusCode == http.StatusNotFound {
+		return nil, &errors.NotFoundError{Resource: "Student"}
 	}
 
-	var student domain.Student
+	if resp.StatusCode != http.StatusOK {
+		return nil, &errors.ServiceError{
+			Service: "backend",
+			Err:     fmt.Errorf("returned status %d: %s", resp.StatusCode, string(body)),
+		}
+	}
+
+	var student dto.Student
 	if err := json.Unmarshal(body, &student); err != nil {
 		return nil, fmt.Errorf("failed to decode response: %w", err)
 	}
@@ -100,8 +117,8 @@ func (c *BackendClient) getStudent(ctx context.Context, id string) (*domain.Stud
 }
 
 // CheckHealth verifies if the backend is reachable
-func (c *BackendClient) CheckHealth() bool {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+func (c *BackendClient) CheckHealth(ctx context.Context) bool {
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
 	url := fmt.Sprintf("%s/health", c.baseURL)
