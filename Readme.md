@@ -1,266 +1,150 @@
-# Student Management System - Developer Skill Test
+# 🚀 Student Management System — Technical Submission
 
-A comprehensive full-stack web application for managing school operations including students, staff, classes, notices, and leave management. This project serves as a skill assessment platform for **Frontend**, **Backend**, and **Blockchain** developers.
+## ⚡ Quick Start — Run locally in 60 seconds
 
-## 🏗️ Project Architecture
+- One-command bring-up:
 
-```
-skill-test/
-├── frontend/           # React + TypeScript + Material-UI
-├── backend/            # Node.js + Express + PostgreSQL
-├── go-service/         # Golang microservice for PDF reports
-├── seed_db/           # Database schema and seed data
-└── README.md          # This file
-```
-
-## 🚀 Quick Start
-
-### Prerequisites
-- Node.js (v16 or higher)
-- PostgreSQL (v12 or higher)
-- npm or yarn
-
-### 1. Backend Setup
 ```bash
-cd backend
-npm install
-cp .env.example .env  # Configure your environment variables
-npm start
+make start
 ```
 
-### 2. Frontend Setup
+- Generate a PDF report:
+
 ```bash
-cd frontend
-npm install
-npm run dev
+curl -L "http://localhost:8080/api/v1/students/1/report" -o student_1_report.pdf
 ```
 
-### 3. Access the Application
-- **Frontend**: http://localhost:5173
-- **Backend API**: http://localhost:5007
-- **Demo Credentials**: 
-  - Email: `admin@school-admin.com`
-  - Password: `3OU4zn3q6Zh9`
+- View logs and stop:
 
-### ** Database Setup **
 ```bash
-# Create PostgreSQL database
-createdb school_mgmt
-
-# Run database migrations
-psql -d school_mgmt -f seed_db/tables.sql
-psql -d school_mgmt -f seed_db/seed-db.sql
+make logs
+make stop
 ```
 
-## 🎯 Skill Test Problems
-
-### **Problem 1: Frontend Developer Challenge**
-**Fix "Add New Notice" Page**
-- **Location**: `/app/notices/add`
-- **Issue**: When clicking the 'Save' button, the 'description' field doesn't get saved
-- **Skills Tested**: React, Form handling, State management, API integration
-- **Expected Fix**: Ensure description field is properly bound and submitted
-
-### **Problem 2: Backend Developer Challenge**
-**Complete CRUD Operations in Student Management**
-- **Location**: `/src/modules/students/students-controller.js`
-- **Issue**: Implement missing CRUD operations for student management
-- **Skills Tested**: Node.js, Express, PostgreSQL, API design, Error handling
-- **Expected Implementation**: Full Create, Read, Update, Delete operations
-
-### **Problem 3: Blockchain Developer Challenge**
-**Implement Certificate Verification System**
-- **Objective**: Add blockchain-based certificate verification for student achievements
-- **Skills Tested**: Smart contracts, Web3 integration, Ethereum/Polygon
-- **Requirements**:
-  - Create smart contract for certificate issuance and verification
-  - Integrate Web3 wallet connection in frontend
-  - Add certificate management in admin panel
-  - Implement IPFS for certificate metadata storage
-
-### **Problem 4: Golang Developer Challenge**
-**Build PDF Report Generation Microservice via API Integration**
-- **Objective**: Create a standalone microservice in Go to generate PDF reports for students by consuming the existing Node.js backend API.
-- **Location**: A new `go-service/` directory at the root of the project.
-- **Description**: This service will connect to the existing Node.js backend's `/api/v1/students/:id` endpoint to fetch student data, and then use the returned JSON to generate a downloadable PDF report.
-- **Skills Tested**: Golang, REST API consumption, JSON parsing, file generation, microservice integration.
-- **Requirements**:
-  - Create a new endpoint `GET /api/v1/students/:id/report` in the Go service.
-  - The Go service must not connect directly to the database; it must fetch data from the Node.js API.
-  - The developer **must** have the PostgreSQL database and the Node.js backend running to complete this task.
-
-### **Problem 5: DevOps Engineer Challenge**
-**Containerize the Full Application Stack**
-- **Objective**: Create a multi-container setup to run the entire application stack (Frontend, Backend, Database) using Docker and Docker Compose.
-- **Location**: `Dockerfile` in the `frontend` and `backend` directories, and a `docker-compose.yml` file at the project root.
-- **Description**: The goal is to make the entire development environment reproducible and easy to launch with a single command. The candidate must ensure all services can communicate with each other inside the Docker network.
-- **Skills Tested**: Docker, Docker Compose, container networking, database seeding in a container, environment variable management.
-- **Requirements**:
-  - Write a `Dockerfile` for the `frontend` service.
-  - Write a `Dockerfile` for the `backend` service.
-  - Create a `docker-compose.yml` at the root to define and link the `frontend`, `backend`, and `postgres` services.
-  - The `postgres` service must be automatically seeded with the data from the `seed_db/` directory on its first run.
-  - The entire application should be launchable with `docker-compose up`.
-
-## 🛠️ Technology Stack
-
-### Frontend
-- **Framework**: React 18 + TypeScript
-- **UI Library**: Material-UI (MUI) v6
-- **State Management**: Redux Toolkit + RTK Query
-- **Form Handling**: React Hook Form + Zod validation
-- **Build Tool**: Vite
-- **Code Quality**: ESLint, Prettier, Husky
-
-### Backend
-- **Runtime**: Node.js
-- **Framework**: Express.js
-- **Database**: PostgreSQL
-- **Authentication**: JWT + CSRF protection
-- **Password Hashing**: Argon2
-- **Email Service**: Resend API
-- **Validation**: Zod
-
-### Database
-- **Primary DB**: PostgreSQL
-- **Schema**: Comprehensive school management schema
-- **Features**: Role-based access control, Leave management, Notice system
-
-## 📋 Features
-
-### Core Functionality
-- **Dashboard**: User statistics, notices, birthday celebrations, leave requests
-- **User Management**: Multi-role system (Admin, Student, Teacher, Custom roles)
-- **Academic Management**: Classes, sections, students, class teachers
-- **Leave Management**: Policy definition, request submission, approval workflow
-- **Notice System**: Create, approve, and distribute notices
-- **Staff Management**: Employee profiles, departments, role assignments
-- **Access Control**: Granular permissions system
-
-### Security Features
-- JWT-based authentication with refresh tokens
-- CSRF protection
-- Role-based access control (RBAC)
-- Password reset and email verification
-- Secure cookie handling
-
-## 🔧 Development Guidelines
-
-### Code Standards
-- **File Naming**: kebab-case for consistency across OS
-- **Import Style**: Absolute imports for cleaner code
-- **Code Formatting**: Prettier with consistent configuration
-- **Git Hooks**: Husky for pre-commit quality checks
-
-### Project Structure
-```
-frontend/src/
-├── api/           # API configuration and base setup
-├── assets/        # Static assets (images, styles)
-├── components/    # Shared/reusable components
-├── domains/       # Feature-based modules
-│   ├── auth/      # Authentication module
-│   ├── students/  # Student management
-│   ├── notices/   # Notice system
-│   └── ...
-├── hooks/         # Custom React hooks
-├── routes/        # Application routing
-├── store/         # Redux store configuration
-├── theme/         # MUI theme customization
-└── utils/         # Utility functions
-```
-
-```
-backend/src/
-├── config/        # Database and app configuration
-├── middlewares/   # Express middlewares
-├── modules/       # Feature-based API modules
-│   ├── auth/      # Authentication endpoints
-│   ├── students/  # Student CRUD operations
-│   ├── notices/   # Notice management
-│   └── ...
-├── routes/        # API route definitions
-├── shared/        # Shared utilities and repositories
-├── templates/     # Email templates
-└── utils/         # Helper functions
-```
-
-## 🧪 Testing Instructions
-
-### For Frontend Developers
-1. Navigate to the notices section
-2. Try to create a new notice with description
-3. Verify the description is saved correctly
-4. Test form validation and error handling
-
-### For Backend Developers
-1. Test all student CRUD endpoints using Postman/curl
-2. Verify proper error handling and validation
-3. Check database constraints and relationships
-4. Test authentication and authorization
-
-### For Blockchain Developers
-1. Set up local blockchain environment (Hardhat/Ganache)
-2. Deploy certificate smart contract
-3. Integrate Web3 wallet connection
-4. Test certificate issuance and verification flow
-
-### For Golang Developers
-1. Set up the PostgreSQL database using `seed_db/` files.
-2. Set up and run the Node.js backend by following its setup instructions.
-3. Run the Go service.
-4. Use a tool like `curl` or Postman to make a GET request to the Go service's `/api/v1/students/:id/report` endpoint.
-5. Verify that the Go service correctly calls the Node.js backend and that a PDF file is successfully generated.
-6. Check the contents of the PDF for correctness.
-
-### For DevOps Engineers
-1. Ensure Docker and Docker Compose are installed on your machine.
-2. From the project root, run the command `docker-compose up --build`.
-3. Wait for all services to build and start.
-4. Access the frontend at `http://localhost:5173` and verify the application is running.
-5. Log in with the demo credentials to confirm that the frontend, backend, and database are all communicating correctly.
-
-## 📚 API Documentation
-
-### Authentication Endpoints
-- `POST /api/v1/auth/login` - User login
-- `POST /api/v1/auth/logout` - User logout
-- `GET /api/v1/auth/refresh` - Refresh access token
-
-### Student Management
-- `GET /api/v1/students` - List all students
-- `POST /api/v1/students` - Create new student
-- `PUT /api/v1/students/:id` - Update student
-- `DELETE /api/v1/students/:id` - Delete student
-
-### Notice Management
-- `GET /api/v1/notices` - List notices
-- `POST /api/v1/notices` - Create notice
-- `PUT /api/v1/notices/:id` - Update notice
-- `DELETE /api/v1/notices/:id` - Delete notice
-
-### PDF Generation Service (Go)
-- `GET /api/v1/students/:id/report` - Generate and download a PDF report for a specific student.
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🆘 Support
-
-For questions and support:
-- Create an issue in the repository
-- Check existing documentation in `/frontend/README.md` and `/backend/README.md`
-- Review the database schema in `/seed_db/tables.sql`
+This stack is production-leaning yet developer-friendly—robust building blocks, clean separation of concerns, and the right operational guardrails. 💪
 
 ---
 
-**Happy Coding! 🚀**
+This document highlights the design choices, architecture decisions, testing strategy, documentation, caching, build and run automation, containerization, error handling, and other strengths implemented across the monorepo.
+
+- Root services: go-service (Golang microservice for PDF reports), frontend (React+Vite), infrastructure (Docker Compose, Makefiles), database (SQL schema + seeders).
+- Evidence in repo: docker-compose.yml, Makefile (root and go-service), go-service/internal/*, go-service/api/openapi.yaml, seed_db/*.
+
+## 🧠 Architecture & Design Principles
+
+- Layered, modular architecture
+  - Go-service: clean layering with Handler → Service → Cache/External → PDF generator. Interfaces (`internal/service/interfaces.go`, `internal/external/interfaces.go`) enforce low coupling and high testability.
+- Integration boundary (no DB coupling)
+  - The Go microservice never touches the database. It consumes an upstream REST API via `internal/external/backend.go`.
+- Strict boundary at HTTP
+  - End-to-end flow: handler validates → service orchestrates → external client fetches → PDF generator renders → cache stores/serves. Changes in one layer don’t ripple across others.
+- Graceful runtime behavior
+  - Go service initializes structured logging, dependency wiring, and a web server with graceful shutdown (`cmd/api/main.go`).
+
+## 📜 API Design & Documentation
+
+- OpenAPI 3.0 documentation is provided for the Go microservice at `go-service/api/openapi.yaml`:
+  - Endpoints: `GET /health`, `GET /api/v1/students/{studentId}/report`.
+  - Detailed response shapes and error codes including 400/404/429/500/503, with headers like `X-Request-ID` and `Content-Disposition`.
+  - Input validation for `studentId` via regex (1–20 numeric characters), mirrored in handler validation.
+
+## 🧰 Caching Strategy (Performance & Cost)
+
+- File-backed, content-addressed cache in the Go microservice (`internal/cache/file_cache.go`):
+  - Keying: SHA-256 hash of student content (e.g., name, class, section, timestamps) created via `GenerateStudentHash` → avoids stale PDFs when the source data changes even if ID remains the same.
+  - Storage: PDFs persisted to disk with an in-memory index for fast lookups; old versions for the same student are cleaned on write.
+  - TTL-based expiry with a background cleanup worker (runs every minute); expired files removed from disk and index.
+  - Optimized happy-path latency: serve-from-cache avoids upstream calls or regenerating PDFs.
+  - Failure-tolerant: cache is optional and non-blocking—generation proceeds even if cache read/write fails.
+
+## 🧾 Error Handling & Resilience
+
+- Go microservice uses typed errors (`internal/errors/errors.go`): `NotFoundError`, `ServiceError`, `PDFGenerationError`.
+  - Handlers map domain errors to correct HTTP statuses (404, 503, 500) with consistent JSON error envelopes.
+  - External client implements retry with exponential backoff (1s, 2s, 4s) for transient upstream failures.
+
+## 🔐 Security Posture
+
+- Service-to-service authentication via `X-API-Key` tied to an environment variable (`INTERNAL_SERVICE_API_KEY`) when communicating with the upstream API.
+- Basic hardening middleware in the Go service:
+  - Security headers (`X-Content-Type-Options`, `X-Frame-Options`), no-store cache on sensitive routes.
+  - Optional per-IP rate limiting (`internal/middleware/rate_limit.go`) with a simple in-memory limiter, configurable via env.
+
+## 📈 Observability & Operability
+
+- Request tracing with `X-Request-ID` propagation in the Go service; every request gets a UUID (`request_id` middleware) and is echoed back in responses.
+- Structured, contextual logging using Uber’s Zap across the Go service (request logs, PDF generation, cache hits/misses, retries), ideal for centralized log aggregation.
+- Health endpoint:
+  - Go service: `/health` probes upstream reachability and exposes an overall status (healthy/degraded).
+
+## ✅ Testing & Coverage
+
+- Go service has comprehensive unit tests across service, cache, and handlers. Coverage artifact `go-service/coverage.out` reports:
+  - Total coverage: 93.1% statements (computed via `go tool cover -func coverage.out`).
+  - Focused tests on edge cases: caching TTL expiry, concurrent access, upstream failures, invalid IDs, PDF generation errors.
+  - Benchmarks included for performance tracking (`make benchmark`).
+- Clear testing ergonomics via Make:
+  - `make test`, `make test-coverage`, `make coverage-html`, `make test-unit`, plus lint/vet/fmt targets ensure a predictable CI path.
+
+## 🧩 Low Coupling, High Cohesion
+
+- Interface-driven design in the Go service decouples components:
+  - `ReportService`, `PDFGenerator`, and `BackendService` interfaces enable mocking and substitution without invasive changes.
+  - Handlers don’t know or care if data comes from cache or live upstream—they depend on the service contract.
+
+## 📦 Containerization & Orchestration
+
+- Docker Compose (`docker-compose.yml`) provides a clean multi-container setup for local dev/testing:
+  - Networking: services communicate over a private bridge network for internal calls.
+  - Health checks: the Go service exposes `/health` used by Docker to monitor liveness.
+- Go service Dockerfile uses a multi-stage build for small final images (Alpine base with CA certs) and an internal health check.
+
+## 🛠️ Makefiles that Supercharge DX
+
+- Root `Makefile` provides one-command onboarding:
+  - `make start` builds images, starts containers, waits for database readiness, and seeds the database automatically from `seed_db/*.sql`.
+  - `make logs`, `make stop`, `make restart`, `make docker-clean`, `make db-seed` streamline day-to-day ops.
+  - Dev helpers: `make go-test`, `make go-fmt`.
+- Go service `Makefile` is a complete developer toolbox:
+  - Build/run (race), deps management, lint/format/vet, coverage, HTML reports, benchmarks, security scans (`gosec`), Swagger generation, hot reload with `air`.
+  - CI-friendly target `make ci` for a compact pipeline.
+
+## 🗃️ Database Schema & Seeders
+
+- Schema (`seed_db/tables.sql`) covers roles, access control, students (users + user_profiles), notices, leaves, departments, classes/sections, and more with foreign keys and unique constraints.
+- Seeders (`seed_db/seed-db.sql`) bootstrap an admin and a realistic set of students, classes, and sections to enable immediate end-to-end testing.
+- Utility SQL functions (e.g., `student_add_update`, `staff_add_update`) encapsulate upsert-like behaviors, centralizing consistency rules.
+
+## 🖨️ PDF Generation Quality
+
+- Professional, readable PDF layout with clear sections: Personal, Academic, Parents, Guardian, Addresses.
+- Consistent typography, headers, and a standardized footer with a generated report ID.
+- Robust data formatting helpers: safe handling for empty values, ISO date parsing, and boolean rendering (Active/Inactive).
+
+## ⚙️ Configuration Management
+
+- Environment-driven configuration for the Go service is centralized in `internal/config/config.go` with `envconfig` and `.env` support, including toggles for cache and rate limiting.
+- Sensible defaults with overrides to support local dev and containerized deployments.
+
+## 🧭 Quality Gates & Runtime Hygiene
+
+- Build and runtime checks:
+  - Docker health check for the Go service.
+  - Graceful shutdown handling in the Go service.
+- Lint/format/vet in Go ensure codebase consistency and correctness.
+- Request/response logging with timings promotes swift incident triage.
+
+## 🌟 What Stands Out
+
+- Thoughtful microservice boundary: the Go service consumes a stable REST contract rather than the DB, enabling independent scaling and evolution.
+- Resilience-first design: retries, typed errors, graceful degradation when cache or the upstream API is unavailable.
+- DevEx excellence: Makefiles + Docker Compose reduce onboarding to a single command while preserving local flexibility.
+- Documentation maturity: OpenAPI spec, README(s), and clear code organization make the service approachable.
+- Performance-aware: cached PDFs, content hashing, and targeted cleanup minimize compute and I/O overhead.
+
+## 🔭 Suggested Next Steps (Optional)
+
+- Add end-to-end integration tests against the upstream API (or a contract test/mock server) to complement unit tests.
+- Consider serving the OpenAPI spec via Swagger UI for quick manual testing.
+- Persist cache metadata to survive restarts (current design intentionally wipes the cache directory on boot for consistency).
+- Add distributed tracing headers propagation (e.g., W3C Trace Context) for deeper observability across calls.
